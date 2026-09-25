@@ -16,6 +16,7 @@ import com.example.bibliotech.BibliotecaApplication
 import com.example.bibliotech.ui.BibliotecaViewModel
 import com.example.bibliotech.ui.PantallaAgregarLibro
 import com.example.bibliotech.ui.PantallaAgregarEstudiante
+import com.example.bibliotech.ui.PantallaDetalleEstudiante
 import com.example.bibliotech.ui.PantallaDetalleLibro
 import com.example.bibliotech.ui.PantallaEditarLibro
 import com.example.bibliotech.ui.PantallaEstudiantes
@@ -159,11 +160,48 @@ fun Navegacion(
         composable("estudiantes") {
             PantallaEstudiantes(
                 onRegresar = { navController.popBackStack() },
-                onVerDetalles = { },
+                onVerDetalles = { idEstudiante ->
+                    navController.navigate("detalleEstudiante/$idEstudiante")
+                },
                 onAgregarEstudiante = { navController.navigate("agregarEstudiante") },
                 mensaje = mensajeGlobal,
                 onMensajeMostrado = { mensajeGlobal = null }
             )
+        }
+
+        composable(
+            route = "detalleEstudiante/{idEstudiante}",
+            arguments = listOf(navArgument("idEstudiante") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idEstudiante = backStackEntry.arguments?.getInt("idEstudiante")
+            val estudianteViewModel: EstudianteViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return EstudianteViewModel(app) as T
+                    }
+                }
+            )
+            val estudiante by estudianteViewModel.estudianteSeleccionado.collectAsState()
+
+            LaunchedEffect(idEstudiante) {
+                if (idEstudiante != null) {
+                    estudianteViewModel.cargarEstudiantePorId(idEstudiante)
+                }
+            }
+
+            if (estudiante != null) {
+                PantallaDetalleEstudiante(
+                    estudiante = estudiante!!,
+                    onRegresar = { navController.popBackStack() },
+                    navController = navController,
+                    onEliminar = { estudianteToDelete ->
+                        estudianteViewModel.eliminarEstudiante(estudianteToDelete)
+                        mensajeGlobal = "🗑️ Estudiante eliminado con éxito"
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
 
         composable("agregarEstudiante") {
