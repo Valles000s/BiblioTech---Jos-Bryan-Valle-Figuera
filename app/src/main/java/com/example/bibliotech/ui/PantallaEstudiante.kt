@@ -24,12 +24,14 @@ import androidx.compose.foundation.rememberScrollState
 // IMPORTACIONES DE MATERIAL 3
 // ===============================
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -337,10 +339,17 @@ fun PantallaEstudiantes(
         // -----------------------------------------------------
         topBar = {
 
-
             TopAppBar(
                 title = {
                     Text("Estudiantes")
+                },
+                navigationIcon = {
+                    IconButton(onClick = onRegresar) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Regresar"
+                        )
+                    }
                 }
             )
         }
