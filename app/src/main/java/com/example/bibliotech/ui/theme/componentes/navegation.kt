@@ -15,12 +15,15 @@ import androidx.navigation.navArgument
 import com.example.bibliotech.BibliotecaApplication
 import com.example.bibliotech.ui.BibliotecaViewModel
 import com.example.bibliotech.ui.PantallaAgregarLibro
+import com.example.bibliotech.ui.PantallaAgregarEstudiante
 import com.example.bibliotech.ui.PantallaDetalleLibro
 import com.example.bibliotech.ui.PantallaEditarLibro
+import com.example.bibliotech.ui.PantallaEstudiantes
 import com.example.bibliotech.ui.PantallaPrincipal
 import com.example.bibliotech.ui.theme.PantallaCatalogo
 import com.example.bibliotech.ui.theme.PantallaLibrosPrestados
 import com.example.bibliotech.ui.theme.PantallaPrestamo
+import com.example.bibliotech.viewmodel.EstudianteViewModel
 import com.example.bibliotech.viewmodel.LibroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,6 +153,35 @@ fun Navegacion(
                 prestamos = bibliotecaViewModel.prestamos,
                 getNombreLibro = { id -> bibliotecaViewModel.getNombreLibro(id) },
                 onRegresar = { navController.popBackStack() }
+            )
+        }
+
+        composable("estudiantes") {
+            PantallaEstudiantes(
+                onRegresar = { navController.popBackStack() },
+                onVerDetalles = { },
+                onAgregarEstudiante = { navController.navigate("agregarEstudiante") },
+                mensaje = mensajeGlobal,
+                onMensajeMostrado = { mensajeGlobal = null }
+            )
+        }
+
+        composable("agregarEstudiante") {
+            val estudianteViewModel: EstudianteViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return EstudianteViewModel(app) as T
+                    }
+                }
+            )
+            PantallaAgregarEstudiante(
+                viewModel = estudianteViewModel,
+                onGuardar = {
+                    mensajeGlobal = "✅ Estudiante guardado con éxito"
+                    navController.popBackStack()
+                },
+                onCancelar = { navController.popBackStack() }
             )
         }
     }
