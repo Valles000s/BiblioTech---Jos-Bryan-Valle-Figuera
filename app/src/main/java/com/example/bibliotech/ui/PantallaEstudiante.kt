@@ -77,7 +77,7 @@ import com.example.bibliotech.viewmodel.EstudianteViewModel
 // ===============================
 // IMPORTACIONES DEL PROYECTO
 // ===============================
-import com.example.bibliotech.ui.componentes.TarjetaEstudiante
+import com.example.bibliotech.ui.theme.componentes.TarjetaEstudiante
 
 
 
@@ -611,15 +611,12 @@ fun PantallaEstudiantes(
 
 
                         TarjetaEstudiante(
-
-
                             estudiante = estudiante,
-
-
                             onVerDetalles = {
-                                onVerDetalles(
-                                    estudiante.id
-                                )
+                                onVerDetalles(estudiante.id)
+                            },
+                            onEliminar = {
+                                viewModel.eliminarEstudiante(estudiante)
                             }
                         )
                     }
