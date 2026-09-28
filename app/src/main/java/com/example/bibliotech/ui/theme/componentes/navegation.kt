@@ -98,8 +98,8 @@ fun Navegacion(
                     libro = libro!!,
                     onRegresar = { navController.popBackStack() },
                     navController = navController,
-                    onEditar = { id -> 
-                        navController.navigate("editar/$id") 
+                    onEditar = { id ->
+                        navController.navigate("editar/$id")
                     },
                     onEliminar = { libroToDelete ->
                         libroViewModel.eliminarLibro(libroToDelete)
@@ -224,3 +224,4 @@ fun Navegacion(
         }
     }
 }
+
