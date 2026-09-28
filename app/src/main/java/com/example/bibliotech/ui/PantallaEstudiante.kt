@@ -611,15 +611,12 @@ fun PantallaEstudiantes(
 
 
                         TarjetaEstudiante(
-
-
                             estudiante = estudiante,
-
-
                             onVerDetalles = {
-                                onVerDetalles(
-                                    estudiante.id
-                                )
+                                onVerDetalles(estudiante.id)
+                            },
+                            onEliminar = {
+                                viewModel.eliminarEstudiante(estudiante)
                             }
                         )
                     }

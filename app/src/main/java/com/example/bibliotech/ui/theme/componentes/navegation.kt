@@ -18,6 +18,7 @@ import com.example.bibliotech.ui.PantallaAgregarLibro
 import com.example.bibliotech.ui.PantallaAgregarEstudiante
 import com.example.bibliotech.ui.PantallaDetalleEstudiante
 import com.example.bibliotech.ui.PantallaDetalleLibro
+import com.example.bibliotech.ui.PantallaEditarEstudiante
 import com.example.bibliotech.ui.PantallaEditarLibro
 import com.example.bibliotech.ui.PantallaEstudiantes
 import com.example.bibliotech.ui.PantallaPrincipal
@@ -195,6 +196,9 @@ fun Navegacion(
                     estudiante = estudiante!!,
                     onRegresar = { navController.popBackStack() },
                     navController = navController,
+                    onEditar = { id ->
+                        navController.navigate("editarEstudiante/$id")
+                    },
                     onEliminar = { estudianteToDelete ->
                         estudianteViewModel.eliminarEstudiante(estudianteToDelete)
                         mensajeGlobal = "🗑️ Estudiante eliminado con éxito"
@@ -221,6 +225,42 @@ fun Navegacion(
                 },
                 onCancelar = { navController.popBackStack() }
             )
+        }
+
+        composable(
+            route = "editarEstudiante/{idEstudiante}",
+            arguments = listOf(navArgument("idEstudiante") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idEstudiante = backStackEntry.arguments?.getInt("idEstudiante")
+            val estudianteViewModel: EstudianteViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return EstudianteViewModel(app) as T
+                    }
+                }
+            )
+            val estudiante by estudianteViewModel.estudianteSeleccionado.collectAsState()
+
+            LaunchedEffect(idEstudiante) {
+                if (idEstudiante != null) {
+                    estudianteViewModel.cargarEstudiantePorId(idEstudiante)
+                }
+            }
+
+            if (estudiante != null) {
+                PantallaEditarEstudiante(
+                    estudiante = estudiante!!,
+                    onGuardar = { estudianteEditado ->
+                        estudianteViewModel.actualizarEstudiante(estudianteEditado)
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("mensaje", "✓ Cambios guardados correctamente")
+                        navController.popBackStack()
+                    },
+                    onCancelar = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
